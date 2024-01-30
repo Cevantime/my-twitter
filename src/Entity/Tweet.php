@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\TweetRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -23,6 +25,18 @@ class Tweet
     #[ORM\ManyToOne(inversedBy: 'tweets')]
     #[ORM\JoinColumn(nullable: false)]
     private ?User $user = null;
+
+    #[ORM\OneToMany(mappedBy: 'tweet', targetEntity: Like::class, orphanRemoval: true)]
+    private Collection $likes;
+
+    #[ORM\OneToMany(mappedBy: 'tweet', targetEntity: View::class, orphanRemoval: true)]
+    private Collection $views;
+
+    public function __construct()
+    {
+        $this->likes = new ArrayCollection();
+        $this->views = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -61,6 +75,66 @@ class Tweet
     public function setUser(?User $user): static
     {
         $this->user = $user;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Like>
+     */
+    public function getLikes(): Collection
+    {
+        return $this->likes;
+    }
+
+    public function addLike(Like $like): static
+    {
+        if (!$this->likes->contains($like)) {
+            $this->likes->add($like);
+            $like->setTweet($this);
+        }
+
+        return $this;
+    }
+
+    public function removeLike(Like $like): static
+    {
+        if ($this->likes->removeElement($like)) {
+            // set the owning side to null (unless already changed)
+            if ($like->getTweet() === $this) {
+                $like->setTweet(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, View>
+     */
+    public function getViews(): Collection
+    {
+        return $this->views;
+    }
+
+    public function addView(View $view): static
+    {
+        if (!$this->views->contains($view)) {
+            $this->views->add($view);
+            $view->setTweet($this);
+        }
+
+        return $this;
+    }
+
+    public function removeView(View $view): static
+    {
+        if ($this->views->removeElement($view)) {
+            // set the owning side to null (unless already changed)
+            if ($view->getTweet() === $this) {
+                $view->setTweet(null);
+            }
+        }
 
         return $this;
     }
