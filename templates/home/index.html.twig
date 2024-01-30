@@ -1,0 +1,17 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Accueil{% endblock %}
+
+{% block body %}
+
+<h1>Bienvenue sur MY Twitter</h1>
+
+<ul>
+{# <?php foreach($last_tweets as $tweet): ?> #}
+{% for tweet in last_tweets %}
+{# <p><?php echo $tweet->getTitle() ?></p> #}
+<li><a href="{{ path('app_tweet', {id: tweet.id}) }}">{{ tweet.title }}</a> <small>({{ tweet.user.username }})</small></li>
+{# <?php endforeach; ?> #}
+{% endfor %}
+</ul>
+{% endblock %}

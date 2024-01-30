@@ -32,6 +32,9 @@ class Tweet
     #[ORM\OneToMany(mappedBy: 'tweet', targetEntity: View::class, orphanRemoval: true)]
     private Collection $views;
 
+    #[ORM\Column]
+    private ?\DateTimeImmutable $created_at = null;
+
     public function __construct()
     {
         $this->likes = new ArrayCollection();
@@ -135,6 +138,18 @@ class Tweet
                 $view->setTweet(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getCreatedAt(): ?\DateTimeImmutable
+    {
+        return $this->created_at;
+    }
+
+    public function setCreatedAt(\DateTimeImmutable $created_at): static
+    {
+        $this->created_at = $created_at;
 
         return $this;
     }

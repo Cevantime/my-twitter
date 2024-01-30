@@ -1,0 +1,13 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ tweet.title }}{% endblock %}
+
+{% block body %}
+<h1>{{ tweet.title }}</h1>
+
+<p>
+{{ tweet.message }}
+</p>
+
+publié par {{ tweet.user.username }}
+{% endblock %}
